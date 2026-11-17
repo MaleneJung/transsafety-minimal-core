@@ -47,3 +47,66 @@ pub fn generate_password(service: &str, user: &str, master_key: &str) -> String 
     }
     password
 }
+
+#[wasm_bindgen]
+pub fn u8s_to_hex(v: &[u8]) -> String {
+    hex::encode(v)
+}
+
+#[wasm_bindgen]
+pub fn hex_to_u8s(h: &str) -> Vec<u8> {
+    hex::decode(h).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn cypher_byte(base: u8, add: u8) -> u8 {
+    let mut encrypted: u16 = base as u16 + add as u16;
+    while encrypted >= 256 {
+        encrypted -= 256;
+    }
+    encrypted as u8
+}
+
+#[wasm_bindgen]
+pub fn decypher_byte(base: u8, sub: u8) -> u8 {
+    let mut decrypted: i8 = base as i8 - sub as i8;
+    while decrypted < 0 {
+        decrypted += 256;
+    }
+    decrypted as u8
+}
+
+#[wasm_bindgen]
+pub fn generate_cypher_key(key: &str, len: usize) -> Vec<u8> {
+    let mut cypher_key: Vec<u8> = Vec::new();
+    let mut cypher_index: usize = 0;
+    while cypher_key.len() < len {
+        let mut hasher = Sha256::new();
+        let i = cypher_index.to_string();
+        hasher.update(format!("{i}-{key}").as_bytes());
+        let hash = hasher.finalize();
+        cypher_key.append(&mut hash.to_vec());
+        cypher_index += 1;
+    }
+    cypher_key
+} 
+
+#[wasm_bindgen]
+pub fn encrypt_text(text: &str, key: &str) -> String {
+    let mut bytes: Vec<u8> = text.as_bytes().to_vec();
+    let cypher_key: Vec<u8> = generate_cypher_key(key, bytes.len());
+    for i in 0..(bytes.len() - 1) {
+        bytes[i] = cypher_byte(bytes[i], cypher_key[i]);
+    }
+    u8s_to_hex(&bytes)
+}
+
+#[wasm_bindgen]
+pub fn decrypt_text(text: &str, key: &str) -> String {
+    let mut bytes: Vec<u8> = hex_to_u8s(text);
+    let cypher_key: Vec<u8> = generate_cypher_key(key, bytes.len());
+    for i in 0..(bytes.len() - 1) {
+        bytes[i] = decypher_byte(bytes[i], cypher_key[i]);
+    } 
+    String::from_utf8_lossy(&bytes).to_string()
+}

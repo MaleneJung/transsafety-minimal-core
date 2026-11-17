@@ -111,3 +111,10 @@ pub fn decrypt_text(text: &str, key: &str) -> String {
     } 
     String::from_utf8_lossy(&bytes).to_string()
 }
+
+#[wasm_bindgen]
+pub fn generate_safe_id(service: &str, user: &str, master_key: &str) -> String {
+    let mut hasher = Sha256::new();
+    hasher.update(format!("safe-id/{service}{user}{master_key}"));
+    u8s_to_hex(&hasher.finalize())
+}

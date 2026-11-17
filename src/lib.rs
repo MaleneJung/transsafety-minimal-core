@@ -69,7 +69,7 @@ pub fn cypher_byte(base: u8, add: u8) -> u8 {
 
 #[wasm_bindgen]
 pub fn decypher_byte(base: u8, sub: u8) -> u8 {
-    let mut decrypted: i8 = base as i8 - sub as i8;
+    let mut decrypted: i16 = base as i16 - sub as i16;
     while decrypted < 0 {
         decrypted += 256;
     }

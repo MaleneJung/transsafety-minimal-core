@@ -5,6 +5,7 @@ authors = ["Malene Jung"]
 description = "The core functionality of transsafety-minimal"
 repository = "https://github.com/MaleneJung/transsafety-minimal-core"
 edition = "2024"
+license = "MIT OR Apache-2.0"
 
 [lib]
 crate-type = ["cdylib"]

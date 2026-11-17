@@ -30,9 +30,10 @@ pub fn get_special_char(from: char) -> char {
 }
 
 #[wasm_bindgen]
-pub fn generate_password(service: &str, user: &str, master_key: &str) -> String {
+pub fn generate_password(service: &str, user: &str, master_key: &str, leak_count: usize) -> String {
+    let leak_count_str = if leak_count > 0 { leak_count.to_string() } else { String::new() };
     let mut hasher = Sha256::new();
-    hasher.update(format!("{service}{user}{master_key}").as_bytes());
+    hasher.update(format!("{service}{user}{master_key}{leak_count_str}").as_bytes());
     let hash = hasher.finalize();
     let mut password = String::new();
     for i in 0..(hash.len() - 1) {

@@ -2,6 +2,7 @@ use sha2::{Digest, Sha256};
 use wasm_bindgen::prelude::*;
 
 pub mod storage;
+pub mod http;
 
 const SPECIAL_CHARS: &str = "!_#";
 

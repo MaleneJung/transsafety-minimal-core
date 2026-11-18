@@ -1,6 +1,8 @@
 use sha2::{Digest, Sha256};
 use wasm_bindgen::prelude::*;
 
+pub mod storage;
+
 const SPECIAL_CHARS: &str = "!_#";
 
 #[wasm_bindgen]

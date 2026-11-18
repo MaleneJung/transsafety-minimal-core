@@ -3,6 +3,7 @@ use wasm_bindgen::prelude::*;
 
 pub mod storage;
 pub mod http;
+pub mod safes;
 
 const SPECIAL_CHARS: &str = "!_#";
 
@@ -97,6 +98,9 @@ pub fn generate_cypher_key(key: &str, len: usize) -> Vec<u8> {
 
 #[wasm_bindgen]
 pub fn encrypt_text(text: &str, key: &str) -> String {
+    if text.len() <= 0 {
+        return text.to_string();
+    }
     let mut bytes: Vec<u8> = text.as_bytes().to_vec();
     let cypher_key: Vec<u8> = generate_cypher_key(key, bytes.len());
     for i in 0..(bytes.len() - 1) {
@@ -107,6 +111,9 @@ pub fn encrypt_text(text: &str, key: &str) -> String {
 
 #[wasm_bindgen]
 pub fn decrypt_text(text: &str, key: &str) -> String {
+    if text.len() <= 0 {
+        return text.to_string();
+    }
     let mut bytes: Vec<u8> = hex_to_u8s(text);
     let cypher_key: Vec<u8> = generate_cypher_key(key, bytes.len());
     for i in 0..(bytes.len() - 1) {
